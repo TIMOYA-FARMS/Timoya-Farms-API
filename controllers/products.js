@@ -46,8 +46,8 @@ export const getAllProducts = async (req, res) => {
         const products = await ProductModel
             .find(JSON.parse(filter))
             .sort(JSON.parse(sort))
-            .skip(parseInt(skip))
-            .limit(parseInt(limit));
+            .skip(skip)
+            .limit(limit);
 
         res.status(200).json(products);
 

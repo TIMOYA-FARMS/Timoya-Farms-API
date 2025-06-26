@@ -112,17 +112,15 @@ export const getUserProfiles = async (req, res, next) => {
         const users = await UserModel
             .find(JSON.parse(filter))
             .sort(JSON.parse(sort))
-            .limit(parseInt(limit))
-            .page(parseInt(page))
-            .skip(parseInt(skip))
+            .limit(limit)
+            .skip(skip)
             .select({ password: 0, __v: 0 });
 
         res.json({
             message: "User profiles retrieved successfully",
             users,
             total: await UserModel.countDocuments(JSON.parse(filter)),
-            limit: parseInt(limit),
-            page: parseInt(page),
+            limit: (limit),
         });
 
 
