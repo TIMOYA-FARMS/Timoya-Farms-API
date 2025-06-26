@@ -23,7 +23,15 @@ export const registerUser = async (req, res, next) => {
             ...value,
             password: hashPassword
         })
-
+        // Send verification email
+        const { generateVerificationEmail } = await import('../utils/emailTemplates.js');
+        const { emailService } = await import('../utils/emailServices.js');
+        const verificationToken = jwt.sign({ id: newUser._id }, process.env.JWT_PRIVATE_KEY, { expiresIn: '1d' });
+        await emailService.sendEmail(
+            newUser.email,
+            'Verify your email - TIMOYA~FARMS',
+            generateVerificationEmail(newUser.firstName, verificationToken)
+        );
         return res.status(201).json({
             message: "User registered successfully",
             user: {
@@ -41,6 +49,8 @@ export const registerUser = async (req, res, next) => {
 };
 
 export const userLogin = async (req, res, next) => {
+    // TODO: In future, detect new device/IP and send login alert email using generateNewDeviceLoginEmail
+
     try {
         const { error, value } = loginUserValidator.validate(req.body);
         if (error) {
@@ -135,7 +145,14 @@ export const updateUserProfile = async (req, res, next) => {
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
-
+        // Send profile update email
+        const { generateProfileUpdateEmail } = await import('../utils/emailTemplates.js');
+        const { emailService } = await import('../utils/emailServices.js');
+        await emailService.sendEmail(
+            updatedUser.email,
+            'Profile Updated - TIMOYA~FARMS',
+            generateProfileUpdateEmail(updatedUser.firstName)
+        );
         return res.status(200).json({
             message: "User profile updated successfully",
             user: {
@@ -210,7 +227,14 @@ export const deleteUserProfile = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
+        // Send account deletion confirmation email
+        const { generateAccountDeletionEmail } = await import('../utils/emailTemplates.js');
+        const { emailService } = await import('../utils/emailServices.js');
+        await emailService.sendEmail(
+            user.email,
+            'Account Deleted - TIMOYA~FARMS',
+            generateAccountDeletionEmail(user.firstName)
+        );
         return res.status(200).json({
             message: "User profile deleted successfully",
             user: {

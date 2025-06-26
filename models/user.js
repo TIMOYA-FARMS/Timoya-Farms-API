@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import {toJSON} from "@reis/mongoose-to-json"
+import { toJSON } from "@reis/mongoose-to-json"
 
 
 const userSchema = new Schema({
@@ -35,6 +35,14 @@ const userSchema = new Schema({
         type: String,
         enum: ['User', 'Farmer', 'Admin'],
         default: 'User'
+    },
+    resetPasswordToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true

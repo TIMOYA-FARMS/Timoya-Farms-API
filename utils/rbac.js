@@ -26,8 +26,12 @@ export const permissions = [
             'createProduct',
             'updateProduct',
             'deleteProduct',
-            'viewProducts',         
-            'viewReports'
+            'viewProducts',
+            'viewCarts',         
+            'viewReports',
+            'createResource',
+            'updateResource',
+            'deleteResource',
         ]
     }
 ]

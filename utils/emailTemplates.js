@@ -1,4 +1,4 @@
-export const generateEmailTemplate = (content) => {
+export const generateEmailTemplate = (content, action = null) => {
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -36,7 +36,7 @@ export const generateEmailTemplate = (content) => {
                 font-size: 0.8em;
                 color: #777;
             }
-                .button {
+            .button {
                 display: inline-block;
                 padding: 10px 20px;
                 background-color: #4CAF50;
@@ -44,7 +44,7 @@ export const generateEmailTemplate = (content) => {
                 text-decoration: none;
                 border-radius: 5px;
                 margin: 20px 0;
-                }
+            }
             .button:hover {
                 background-color: #45a049;
             }
@@ -55,13 +55,13 @@ export const generateEmailTemplate = (content) => {
             <h1>TIMOYA~FARMS</h1>
         </div>
         <div class="content">
-            <h2>Notification</h2>
-            <p>${content}</p>
-            <a href="#" class="button">Take Action</a>
+            ${content}
+            ${action ? `<div style='text-align:center;'>${action}</div>` : ''}
         </div>
         <div class="footer">
             <p>&copy; ${new Date().getFullYear()} TIMOYA~FARMS. All rights reserved.</p>
             <p>If you have any questions, feel free to contact us at <a href="mailto:${process.env.SUPPORT_EMAIL}">${process.env.SUPPORT_EMAIL}</a>.</p>
+            <p>If you wish to unsubscribe from future emails, click <a href="${process.env.UNSUBSCRIBE_URL || '#'}">here</a>.</p>
         </div>
     </body>
     </html>
@@ -71,7 +71,7 @@ export const generateEmailTemplate = (content) => {
 
 export const generateVerificationEmail = (firstName, verificationLink) => {
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationLink}`;
-    return generateVerificationEmail(`
+    return generateEmailTemplate(`
     <h2>Email Verification</h2>
     <p>Dear ${firstName},</p>
     <p>Thank you for registering with TIMOYA~FARMS! To complete your registration, please verify your email address by clicking the button below:</p>
@@ -115,21 +115,24 @@ export const generatePasswordResetConfirmationEmail = (firstName) => {
     `);
 }
 
-export const orderConfirmationEmail = (firstName, orderDetails) => {
+export const orderConfirmationEmail = (firstName, order) => {
     return generateEmailTemplate(`
     <h2>Order Confirmation</h2>
     <p>Dear ${firstName},</p>
     <p>Thank you for your order! Here are the details:</p>
+    <p><strong>Order ID:</strong> ${order._id}</p>
     <ul>
-        ${orderDetails.map(item => `<li>${item.name} - Quantity: ${item.quantity} - Price: $${item.price}</li>`).join('')}
+        ${order.products.map(item => `<li>${item.product.productName} - Quantity: ${item.quantity} - Price: GHS ${item.price}</li>`).join('')}
     </ul>
-    <p>Total Amount: GHS ${orderDetails.reduce((total, item) => total + (item.price * item.quantity), 0)}</p>
+    <p><strong>Total Amount:</strong> GHS ${order.totalPrice}</p>
+    ${order.estimatedDelivery ? `<p><strong>Estimated Delivery:</strong> ${order.estimatedDelivery}</p>` : ''}
     <p>We appreciate your business and look forward to serving you again!</p>
     <p>Best regards,<br>TIMOYA~FARMS Team</p>
     `);
 }
 
-export const orderStatusUpdateEmail = (firstName, orderId, status) => {
+
+export const orderStatusUpdateEmail = (firstName, order, status) => {
     return generateEmailTemplate(`
     <h2>Order Status Update</h2>
     <p>Dear ${firstName},</p>
