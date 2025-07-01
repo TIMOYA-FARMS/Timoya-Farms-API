@@ -5,7 +5,7 @@ import {
   getOrderDetails,
   updateOrderStatus
 } from '../controllers/order.js';
-import { isAuthenticated } from '../middlewares/auth.js';
+import { hasPermission, isAuthenticated } from '../middlewares/auth.js';
 
 const orderRouter = Router();
 
@@ -16,12 +16,13 @@ orderRouter.get('/orders', isAuthenticated, getUserOrders);
 orderRouter.get('/orders/:id', isAuthenticated, getOrderDetails);
 
 // Admin: Get all orders
-orderRouter.get('/order/admin/all', isAuthenticated, async (req, res, next) => {
-  if (req.auth.role !== 'admin') {
-    return res.status(403).json({ message: 'Forbidden: Admins only' });
-  }
-  return getAllOrders(req, res, next);
-});
+// orderRouter.get('/order/admin/all', isAuthenticated, async (req, res, next) => {
+//   if (req.auth.role !== 'Admin') {
+//     return res.status(403).json({ message: 'Forbidden: Admins only' });
+//   }
+//   return getAllOrders(req, res, next);
+// });
+orderRouter.get('/orders/admin/all', isAuthenticated, hasPermission('viewOrders'), getAllOrders);
 
 // Admin/User: Update order status (admin or order owner)
 orderRouter.patch('/orders/:id/status', isAuthenticated, updateOrderStatus);
