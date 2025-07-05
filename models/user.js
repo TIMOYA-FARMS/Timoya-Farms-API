@@ -3,6 +3,11 @@ import { toJSON } from "@reis/mongoose-to-json"
 
 
 const userSchema = new Schema({
+    avatar: {
+        type: String,
+        required: false,
+        trim: true
+    },
     firstName: {
         type: String,
         required: true
