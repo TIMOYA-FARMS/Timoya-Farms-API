@@ -15,7 +15,7 @@ userRouter.get('/user/me', isAuthenticated, checkBlacklist, hasPermission('viewP
 
 userRouter.get('/users', isAuthenticated, hasPermission('viewProfiles'), getUserProfiles);
 
-userRouter.patch('/users/update', isAuthenticated, hasPermission('updateProfile'), updateUserProfile)
+userRouter.patch('/users/update', isAuthenticated, hasPermission('updateProfiles'), updateUserProfile)
 
 
 
