@@ -10,7 +10,7 @@ export const registerUserValidator = Joi.object({
     address: Joi.string().optional().allow(''),
     phone: Joi.string().optional().allow(''),
     role: Joi.string().valid('User', 'Farmer', 'Admin').default('User'),
-    avater: Joi.string().optional().allow(''),
+    avatar: Joi.string().optional().allow(''),
 });
 
 export const loginUserValidator = Joi.object({
@@ -25,5 +25,5 @@ export const updateUserValidator = Joi.object({
     address: Joi.string().optional().allow(''),
     phone: Joi.string().optional().allow(''),
     role: Joi.string().valid('User', 'Farmer', 'Admin').optional(),
-    avater: Joi.string().optional().allow(''),
+    avatar: Joi.string().optional().allow(''),
 });
