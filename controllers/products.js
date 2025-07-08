@@ -39,7 +39,7 @@ export const createProduct = async (req, res) => {
     }
 }
 
-export const getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res, next) => {
     try {
         const { filter = '{}', sort = '{}', skip = 0, limit = 25 } = req.query;
 

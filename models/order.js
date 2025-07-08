@@ -5,7 +5,7 @@ export const orderSchema = new Schema({
     user: {
         type: Types.ObjectId,
         ref: 'User',
-        required: true
+        required: false
     },
     products: [{
         product: {

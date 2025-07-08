@@ -10,6 +10,8 @@ import orderRouter from './routes/order.js';
 import paymentRouter from './routes/payment.js';
 import authRouter from './routes/auth.js';
 import learningResourceRouter from './routes/learningResource.js';
+import galleryRouter from './routes/gallery.js';
+import blogRouter from './routes/blog.js';
 
 await mongoose.connect(process.env.MONGODB_URI);
 
@@ -28,6 +30,8 @@ app.use(paymentRouter);
 app.use(orderRouter);
 app.use(authRouter);
 app.use(learningResourceRouter);
+app.use(galleryRouter);
+app.use(blogRouter);
 
 app.listen(port, () => {
     console.log(`App is running on port ${port}`);

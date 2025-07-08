@@ -6,7 +6,11 @@ export const cartSchema = Schema({
     user: {
         type: Types.ObjectId,
         ref: 'User',
-        required: true
+        required: false
+    },
+    guestId: {
+        type: String,
+        required: false
     },
 
     product: {

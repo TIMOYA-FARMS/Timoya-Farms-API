@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const addOrderValidator = Joi.object({
-    user: Joi.string().length(24),
+    user: Joi.string().length(24).optional(),
 
     products: Joi.array().items(
         Joi.object({

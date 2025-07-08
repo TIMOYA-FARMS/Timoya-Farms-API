@@ -33,3 +33,26 @@ export const checkout = async (req, res, next) => {
   }
 };
 
+export const guestCheckout = async (req, res, next) => {
+  try {
+    // 1. Validate input (products, shippingAddress)
+    const { products, shippingAddress } = req.body;
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ message: "Products are required for guest checkout." });
+    }
+    if (!shippingAddress || !shippingAddress.email) {
+      return res.status(400).json({ message: "Shipping address with email is required for guest checkout." });
+    }
+    // 2. Compose order payload
+    const orderPayload = {
+      products,
+      shippingAddress
+    };
+    // 3. Create a mock req object for addOrder with new body (no user)
+    req.body = orderPayload;
+    await addOrder(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+

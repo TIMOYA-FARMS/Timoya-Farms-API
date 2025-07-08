@@ -33,6 +33,11 @@ export const permissions = [
             'createResource',
             'updateResource',
             'deleteResource',
+            'addGalleryImage',
+            'deleteGalleryImage',
+            'createBlog',
+            'updateBlog',
+            'deleteBlog',
         ]
     }
 ]

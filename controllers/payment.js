@@ -15,7 +15,7 @@ export const initializePayment = async (req, res, next) => {
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
-        const email = order.user?.email || req.auth?.email;
+        const email = order.user?.email || order.shippingAddress?.email || req.auth?.email;
         const amount = order.totalPrice;
         if (!email || !amount) {
             return res.status(400).json({ message: 'Order must have a valid user email and amount.' });
