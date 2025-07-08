@@ -158,9 +158,17 @@ export const guestAddToCart = async (req, res, next) => {
         if (!product) {
             return res.status(400).json({ message: "Product ID is required" });
         }
+        // const productData = await ProductModel.findById(product);
+        // if (!productData) {
+        //     return res.status(404).json({ message: "Product not found", productId: product });
+        // }
         const productData = await ProductModel.findById(product);
         if (!productData) {
-            return res.status(404).json({ message: "Product not found", productId: product });
+            return res.status(404).json({ 
+                message: "Product not found",
+                productId: product,
+                details: "Please check the product ID and try again."
+             });
         }
         const existingCartItem = await cartModel.findOne({ guestId, product: productData._id });
         if (existingCartItem) {

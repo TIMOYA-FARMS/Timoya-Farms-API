@@ -48,21 +48,26 @@ export const addOrder = async (req, res, next) => {
             totalPrice += product.price * item.quantity;
         }
 
-        const order = await orderModel.create({
+        const orderData = {
             ...value,
             products: productsWithPrices,
             totalPrice,
-            user: req.auth.id,
-        });
-
+        };
+        if (req.auth && req.auth.id) {
+            orderData.user = req.auth.id;
+        }
+        const order = await orderModel.create(orderData);
 
         await order.populate('products.product');
         await order.populate('user', 'firstName lastName email');
 
-        const firstName = order.user?.firstName || req.auth.firstName || "Customer";
-        const emailSubject = `Order Confirmation - Order #${order._id}`;
-        const emailBody = orderConfirmationEmail(firstName, order);
-        await emailService.sendEmail(req.auth.email, emailSubject, emailBody);
+        const firstName = order.user?.firstName || req.auth?.firstName || order.shippingAddress?.firstName || "Customer";
+        const emailToSend = order.user?.email || req.auth?.email || order.shippingAddress?.email;
+        if (emailToSend) {
+            const emailSubject = `Order Confirmation - Order #${order._id}`;
+            const emailBody = orderConfirmationEmail(firstName, order);
+            await emailService.sendEmail(emailToSend, emailSubject, emailBody);
+        }
 
         res.status(201).json({
             message: "Order placed successfully",
