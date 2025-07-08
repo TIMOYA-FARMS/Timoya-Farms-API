@@ -112,15 +112,25 @@ export const verifyPayment = async (req, res, next) => {
             console.log('Order found by metadata.orderId:', order?._id);
         }
 
-        // 4. Try to find the most recent pending order for the user/email
+        // 4. Try to find the most recent pending order for the user or guest email
         if (!order && data.customer && data.customer.email) {
+            // Try user email
             order = await orderModel.findOne({ status: 'Pending' })
                 .populate('user', 'email')
                 .sort({ createdAt: -1 });
             if (order && order.user && order.user.email === data.customer.email) {
                 console.log('Order found by user email:', order._id);
             } else {
-                order = null;
+                // Try guest email in shippingAddress
+                order = await orderModel.findOne({
+                    status: 'Pending',
+                    'shippingAddress.email': data.customer.email
+                }).sort({ createdAt: -1 });
+                if (order) {
+                    console.log('Order found by guest shippingAddress.email:', order._id);
+                } else {
+                    order = null;
+                }
             }
         }
 
