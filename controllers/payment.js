@@ -16,13 +16,13 @@ export const initializePayment = async (req, res, next) => {
             return res.status(404).json({ message: 'Order not found' });
         }
         const email = order.user?.email || order.shippingAddress?.email || req.auth?.email;
-        const amount = order.totalPrice;
+        const amount = order.totalPrice * 100; // Convert Ghana Cedis to kobo for Paystack
         if (!email || !amount) {
             return res.status(400).json({ message: 'Order must have a valid user email and amount.' });
         }
         const paystackRes = await axios.post(
             'https://api.paystack.co/transaction/initialize',
-            { email, amount: amount * 100, metadata: { orderId } },
+            { email, amount: amount, metadata: { orderId } },
             { headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` } }
         );
         res.status(200).json({ authorization_url: paystackRes.data.data.authorization_url });

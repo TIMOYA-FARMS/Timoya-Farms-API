@@ -2,6 +2,7 @@ import { Router } from "express";
 import upload from "../middlewares/multer.js";
 import { addImage, deleteImage, getGallery } from "../controllers/gallery.js";
 import { isAuthenticated, hasPermission } from "../middlewares/auth.js";
+import { staticCache, apiCache } from "../middlewares/cache.js";
 
 const galleryRouter = Router();
 
@@ -20,6 +21,6 @@ galleryRouter.delete(
   deleteImage
 );
 
-galleryRouter.get("/gallery", getGallery);
+galleryRouter.get("/gallery", staticCache, getGallery);
 
 export default galleryRouter; 

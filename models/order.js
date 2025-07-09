@@ -25,9 +25,7 @@ export const orderSchema = new Schema({
     }],
     totalPrice: {
         type: Number,
-        required: true,
-        get: (value) => (value / 100).toFixed(2),
-        set: (value) => Math.round(value * 100)
+        required: true
     },
     status: {
         type: String,
@@ -52,6 +50,10 @@ export const orderSchema = new Schema({
 // Add index for faster queries
 orderSchema.index({ user: 1, status: 1 });
 orderSchema.index({ paymentRef: 1 });
+orderSchema.index({ createdAt: -1 }); // For recent orders
+orderSchema.index({ status: 1, createdAt: -1 }); // For status-based queries
+orderSchema.index({ 'shippingAddress.email': 1 }); // For guest order lookups
+orderSchema.index({ user: 1, createdAt: -1 }); // For user order history
 
 orderSchema.plugin(toJSON);
 

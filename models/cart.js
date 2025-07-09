@@ -29,6 +29,12 @@ export const cartSchema = Schema({
     timestamps: true
 })
 
+// Add performance indexes
+cartSchema.index({ user: 1, product: 1 }); // For user cart queries
+cartSchema.index({ guestId: 1, product: 1 }); // For guest cart queries
+cartSchema.index({ user: 1 }); // For user cart retrieval
+cartSchema.index({ guestId: 1 }); // For guest cart retrieval
+
 cartSchema.plugin(toJSON);
 
 export const cartModel = model('Cart', cartSchema);

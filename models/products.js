@@ -61,6 +61,12 @@ const productSchema = new Schema({
     timestamps: true
 })
 
+// Add performance indexes
+productSchema.index({ category: 1 });
+productSchema.index({ stockStatus: 1 });
+productSchema.index({ outOfStock: 1 });
+productSchema.index({ stock: 1 }); // For stock queries
+
 productSchema.pre('save', function(next) {
     // Keep outOfStock updated automatically
     if (typeof this.stock === 'number') {

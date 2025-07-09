@@ -1,6 +1,7 @@
 import { ProductModel } from "../models/products.js";
 import { createProductValidator, updateProductValidator } from "../validators/products.js";
 import cloudinary from "../config/cloudinary.js";
+import { getCachedProducts, cacheProducts, invalidateProductCache } from "../utils/cache.js";
 
 
 export const createProduct = async (req, res) => {
@@ -30,6 +31,9 @@ export const createProduct = async (req, res) => {
             user: req.auth.id
         });
 
+        // Invalidate product cache when new product is created
+        invalidateProductCache();
+
         res.status(201).json({
             message: "Product created successfully",
             product
@@ -41,13 +45,22 @@ export const createProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res, next) => {
     try {
-        const { filter = '{}', sort = '{}', skip = 0, limit = 25 } = req.query;
+        const { filter = '{}', sort = '{}', skip = 0, limit = 25, category } = req.query;
+
+        // Check cache first
+        const cachedProducts = getCachedProducts(category);
+        if (cachedProducts) {
+            return res.status(200).json(cachedProducts);
+        }
 
         const products = await ProductModel
             .find(JSON.parse(filter))
             .sort(JSON.parse(sort))
             .skip(skip)
             .limit(limit);
+
+        // Cache the results
+        await cacheProducts(products, category);
 
         res.status(200).json(products);
 
@@ -111,6 +124,9 @@ export const updateProduct = async (req, res, next) => {
             return res.status(404).json({ message: "Failed to update product" });
         }
 
+        // Invalidate product cache when product is updated
+        invalidateProductCache();
+
         res.status(200).json({
             message: "Product updated successfully",
             product: updatedProduct
@@ -132,6 +148,9 @@ export const deleteProduct = async (req, res, next) => {
         if (product.imagePublicId) {
             await cloudinary.uploader.destroy(product.imagePublicId);
         }
+
+        // Invalidate product cache when product is deleted
+        invalidateProductCache();
     
 
         res.status(200).json({

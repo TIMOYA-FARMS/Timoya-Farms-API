@@ -1,5 +1,6 @@
 import { Gallery } from "../models/gallery.js";
 import cloudinary from "../config/cloudinary.js";
+import { getCachedGallery, cacheGallery, invalidateGalleryCache } from "../utils/cache.js";
 
 // Add image to gallery (admin only)
 export const addImage = async (req, res, next) => {
@@ -12,6 +13,10 @@ export const addImage = async (req, res, next) => {
     const publicId = req.file.filename;
     const uploadedBy = req.auth?.id;
     const image = await Gallery.create({ url: imageUrl, publicId, title, uploadedBy });
+    
+    // Invalidate gallery cache when new image is added
+    invalidateGalleryCache();
+    
     res.status(201).json({ message: "Image added to gallery", image });
   } catch (err) { next(err); }
 };
@@ -27,6 +32,10 @@ export const deleteImage = async (req, res, next) => {
       // Log but do not fail deletion
       console.error('Cloudinary deletion error:', cloudErr);
     }
+    
+    // Invalidate gallery cache when image is deleted
+    invalidateGalleryCache();
+    
     res.json({ message: "Image deleted from gallery" });
   } catch (err) { next(err); }
 };
@@ -34,7 +43,17 @@ export const deleteImage = async (req, res, next) => {
 // Get all gallery images (public)
 export const getGallery = async (req, res, next) => {
   try {
+    // Check cache first
+    const cachedImages = getCachedGallery();
+    if (cachedImages) {
+      return res.json({ images: cachedImages });
+    }
+
     const images = await Gallery.find().sort({ createdAt: -1 });
+    
+    // Cache the results
+    await cacheGallery(images);
+    
     res.json({ images });
   } catch (err) { next(err); }
 }; 
