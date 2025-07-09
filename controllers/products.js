@@ -1,7 +1,11 @@
 import { ProductModel } from "../models/products.js";
 import { createProductValidator, updateProductValidator } from "../validators/products.js";
 import cloudinary from "../config/cloudinary.js";
-import { getCachedProducts, cacheProducts, invalidateProductCache } from "../utils/cache.js";
+import { 
+    getCachedProducts, 
+    cacheProducts, 
+    invalidateProductCache 
+} from "../utils/cache.js";
 
 
 export const createProduct = async (req, res) => {

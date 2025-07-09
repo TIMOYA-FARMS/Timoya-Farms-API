@@ -151,6 +151,9 @@ export const removeCartItem = async (req, res, next) => {
 // Guest: Add to cart
 export const guestAddToCart = async (req, res, next) => {
     try {
+        if (!req.body) {
+            return res.status(400).json({ message: "Request body is required" });
+        }
         const { product, quantity, guestId } = req.body;
         if (!guestId) {
             return res.status(400).json({ message: "guestId is required for guest cart." });
@@ -158,17 +161,9 @@ export const guestAddToCart = async (req, res, next) => {
         if (!product) {
             return res.status(400).json({ message: "Product ID is required" });
         }
-        // const productData = await ProductModel.findById(product);
-        // if (!productData) {
-        //     return res.status(404).json({ message: "Product not found", productId: product });
-        // }
         const productData = await ProductModel.findById(product);
         if (!productData) {
-            return res.status(404).json({ 
-                message: "Product not found",
-                productId: product,
-                details: "Please check the product ID and try again."
-             });
+            return res.status(404).json({ message: "Product not found", productId: product });
         }
         const existingCartItem = await cartModel.findOne({ guestId, product: productData._id });
         if (existingCartItem) {
@@ -188,10 +183,17 @@ export const guestViewCart = async (req, res, next) => {
         if (!guestId) {
             return res.status(400).json({ message: "guestId is required for guest cart." });
         }
+        
         const cart = await cartModel.find({ guestId }).populate('product');
         let totalPrice = 0;
         cart.forEach(item => { totalPrice += item.product.price * item.quantity; });
-        res.status(200).json({ message: "Guest cart retrieved successfully", cart, totalPrice, itemCount: cart.length });
+        
+        res.status(200).json({ 
+            message: "Guest cart retrieved successfully", 
+            cart, 
+            totalPrice, 
+            itemCount: cart.length 
+        });
     } catch (error) { next(error); }
 };
 
