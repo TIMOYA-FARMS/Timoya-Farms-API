@@ -51,8 +51,11 @@ export const getAllProducts = async (req, res, next) => {
     try {
         const { filter = '{}', sort = '{}', skip = 0, limit = 25, category } = req.query;
 
+        // Create cache key that includes both category and filter
+        const cacheKey = `${category || 'all'}_${filter}_${sort}_${skip}_${limit}`;
+        
         // Check cache first
-        const cachedProducts = getCachedProducts(category);
+        const cachedProducts = getCachedProducts(cacheKey);
         if (cachedProducts) {
             return res.status(200).json(cachedProducts);
         }
@@ -63,8 +66,8 @@ export const getAllProducts = async (req, res, next) => {
             .skip(skip)
             .limit(limit);
 
-        // Cache the results
-        await cacheProducts(products, category);
+        // Cache the results with the full cache key
+        await cacheProducts(products, cacheKey);
 
         res.status(200).json(products);
 
