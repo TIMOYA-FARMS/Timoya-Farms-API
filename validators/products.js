@@ -9,7 +9,7 @@ export const createProductValidator = Joi.object({
     stockStatus: Joi.string().valid('In Stock', 'Out of Stock', 'Pre-order').default('In Stock'),
     image: Joi.string().optional().allow(''),
     imagePublicId: Joi.string().optional().allow(''),
-    quantity: Joi.number().required().min(0)
+    quantity: Joi.number().optional().min(0)
 
 });
 
