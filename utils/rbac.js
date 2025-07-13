@@ -38,6 +38,9 @@ export const permissions = [
             'createBlog',
             'updateBlog',
             'deleteBlog',
+            'createCategory',
+            'updateCategory',
+            'deleteCategory',
         ]
     }
 ]

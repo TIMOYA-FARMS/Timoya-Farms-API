@@ -12,6 +12,7 @@ import authRouter from './routes/auth.js';
 import learningResourceRouter from './routes/learningResource.js';
 import galleryRouter from './routes/gallery.js';
 import blogRouter from './routes/blog.js';
+import categoryRouter from './routes/category.js';
 
 await mongoose.connect(process.env.MONGODB_URI);
 
@@ -32,6 +33,7 @@ app.use(authRouter);
 app.use(learningResourceRouter);
 app.use(galleryRouter);
 app.use(blogRouter);
+app.use(categoryRouter);
 
 app.listen(port, () => {
     console.log(`App is running on port ${port}`);
