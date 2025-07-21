@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getUserProfile, getUserProfiles, registerUser, updateUserProfile, userLogin, userLogout } from "../controllers/user.js";
+import { adminUpdateUserProfile, getUserProfile, getUserProfiles, registerUser, updateUserProfile, userLogin, userLogout } from "../controllers/user.js";
 import { checkBlacklist, hasPermission, isAuthenticated } from "../middlewares/auth.js";
 
 const userRouter = Router();
@@ -15,8 +15,8 @@ userRouter.get('/user/me', isAuthenticated, checkBlacklist, hasPermission('viewP
 
 userRouter.get('/users', isAuthenticated, hasPermission('viewProfiles'), getUserProfiles);
 
-userRouter.patch('/users/update', isAuthenticated, hasPermission('updateProfiles'), updateUserProfile)
+userRouter.patch('/users/update', isAuthenticated, hasPermission('updateProfile'), updateUserProfile)
 
-
+userRouter.patch('/users/admin/update', isAuthenticated, hasPermission('updateProfiles'), adminUpdateUserProfile)
 
 export default userRouter;
