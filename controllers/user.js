@@ -178,6 +178,11 @@ export const adminUpdateUserProfile = async (req, res, next) => {
             return res.status(422).json(error.details[0].message);
         }
 
+        // Prevent email updates to avoid duplicate key errors
+        if (value.email) {
+            delete value.email;
+        }
+
         const updatedUser = await UserModel.findByIdAndUpdate(userId, value, { new: true });
 
         if (!updatedUser) {
