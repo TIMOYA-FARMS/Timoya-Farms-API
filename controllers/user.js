@@ -179,7 +179,7 @@ export const adminUpdateUserProfile = async (req, res, next) => {
         }
 
         // Prevent email updates to avoid duplicate key errors
-        if (value.email) {
+        if (value.email && value.email === user.email) {
             delete value.email;
         }
 
