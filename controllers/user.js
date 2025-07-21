@@ -169,7 +169,6 @@ export const updateUserProfile = async (req, res, next) => {
 
 export const adminUpdateUserProfile = async (req, res, next) => {
     try {
-        const { userId } = req.params;
         const { error, value } = updateUserValidator.validate({
             ...req.body,
             avatar: req.file?.filename
@@ -179,7 +178,7 @@ export const adminUpdateUserProfile = async (req, res, next) => {
         }
 
         // Prevent email updates to avoid duplicate key errors
-        if (value.email && value.email === user.email) {
+        if (value.email) {
             delete value.email;
         }
 
