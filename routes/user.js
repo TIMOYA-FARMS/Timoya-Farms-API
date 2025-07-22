@@ -17,6 +17,6 @@ userRouter.get('/users', isAuthenticated, hasPermission('viewProfiles'), getUser
 
 userRouter.patch('/users/update', isAuthenticated, hasPermission('updateProfile'), updateUserProfile)
 
-userRouter.patch('/users/admin/update', isAuthenticated, hasPermission('updateProfiles'), adminUpdateUserProfile)
+userRouter.patch('/admin/users/:userId', isAuthenticated, hasPermission('updateProfiles'), adminUpdateUserProfile)
 
 export default userRouter;
