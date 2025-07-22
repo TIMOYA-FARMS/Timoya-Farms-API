@@ -184,6 +184,7 @@ export const adminUpdateUserProfile = async (req, res, next) => {
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
+        console.log('User ID from params:', userId);
 
         return res.status(200).json({
             message: "User profile updated successfully",
