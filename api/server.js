@@ -2,6 +2,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import connectDB from '../utils/db.js';
 
 import userRouter from '../routes/user.js';
 import productRouter from '../routes/products.js';
@@ -37,17 +38,8 @@ app.use(blogRouter);
 app.use(categoryRouter);
 
 // --- DATABASE CONNECTION ---
-const connectDB = async () => {
-  try {
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(process.env.MONGODB_URI);
-      console.log('✅ MongoDB connected successfully.');
-    }
-  } catch (err) {
-    console.error('❌ MongoDB connection failed:', err.message);
-  }
-};
-connectDB();
+await connectDB();
+console.log('✅ MongoDB connected successfully.');
 
 // --- EXPORT APP FOR VERCEL ---
 export default app;
