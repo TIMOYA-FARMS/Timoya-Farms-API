@@ -6,3 +6,5 @@ package-lock.json
 logs
 npm-debug.log*
 .qodo
+.vercel
+.git

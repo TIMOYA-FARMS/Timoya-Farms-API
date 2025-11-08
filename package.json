@@ -1,16 +1,16 @@
 {
   "name": "timoya-farms-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend API for Timoya Farms — built with Express.js and MongoDB.",
+  "main": "api/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --env-file=.env .",
-    "start": "node ."
+    "dev": "nodemon --env-file=.env server-local.js",
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["express", "api", "vercel", "mongoose", "timoya-farms"],
+  "author": "Frederick",
   "license": "ISC",
   "dependencies": {
     "@reis/mongoose-to-json": "^3.0.0",
